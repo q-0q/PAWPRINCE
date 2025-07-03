@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FogSingleton : MonoBehaviour
 {
 
     public Mesh VolumeMesh;
-    [Range(1, 10)] public float OcclusionResolution;
-    [Range(1, 10)] public float VolumeResolution;
+    private float _resolution = 16f;
     
     [System.NonSerialized]
     public static FogSingleton Singleton;
@@ -40,6 +40,11 @@ public class FogSingleton : MonoBehaviour
     public Material GetMaterial()
     {
         return _computeDispatcher.GetMaterial();
+    }
+
+    public float GetResolution()
+    {
+        return _resolution;
     }
     
     // Dispatch in LateUpdate so FogVolumes can update

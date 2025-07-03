@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -24,20 +25,20 @@ public class FogVolume : MonoBehaviour
     void Start()
     {
         _occlusionCamera = CreateOcclusionCamera();
-        VolumeTexture = CreateVolumeTexture(256);
-        OcclusionTexture = CreateOcclusionTexture(256);
+        VolumeTexture = CreateVolumeTexture();
+        OcclusionTexture = CreateOcclusionTexture();
         _meshRenderer = CreateMeshRenderer();
         
         _occlusionCamera.targetTexture = OcclusionTexture;
-        
     }
-    
-    private RenderTexture CreateVolumeTexture(int size)
+    private RenderTexture CreateVolumeTexture()
     {
-        var rt = new RenderTexture(size, size, 0, GraphicsFormat.R8G8B8A8_UNorm)
+        var size = transform.localScale * FogSingleton.Singleton.GetResolution();
+        
+        var rt = new RenderTexture((int)size.x, (int)size.y, 0, GraphicsFormat.R8G8B8A8_UNorm)
         {
             dimension = UnityEngine.Rendering.TextureDimension.Tex3D,
-            volumeDepth = size,
+            volumeDepth = (int)size.z,
             enableRandomWrite = true,
             wrapMode = TextureWrapMode.Clamp,
             filterMode = FilterMode.Bilinear
@@ -46,9 +47,12 @@ public class FogVolume : MonoBehaviour
         return rt;
     }
     
-    private RenderTexture CreateOcclusionTexture(int size)
+    private RenderTexture CreateOcclusionTexture()
     {
-        var rt = new RenderTexture(size, size, 0, GraphicsFormat.R8G8B8A8_UNorm)
+        var size = transform.localScale * FogSingleton.Singleton.GetResolution();
+        Debug.Log(transform.localScale + " : " + FogSingleton.Singleton.GetResolution());
+        
+        var rt = new RenderTexture((int)size.x, (int)size.z, 0, GraphicsFormat.R8G8B8A8_UNorm)
         {
             dimension = UnityEngine.Rendering.TextureDimension.Tex2D,
             enableRandomWrite = true,
@@ -69,7 +73,7 @@ public class FogVolume : MonoBehaviour
         occlusionCameraGameObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(OcclusionCameraRotationEulers));
 
         occlusionCamera.orthographic = true;
-        occlusionCamera.orthographicSize = 15;
+        occlusionCamera.orthographicSize = 5;
         occlusionCamera.nearClipPlane = OcclusionNearClipPlane;
         occlusionCamera.farClipPlane = OcclusionFarClipPlane;
         occlusionCamera.targetTexture = OcclusionTexture;
