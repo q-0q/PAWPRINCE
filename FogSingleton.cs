@@ -35,6 +35,11 @@ public class FogSingleton : MonoBehaviour
     {
         _volumes = FindObjectsByType<FogVolume>(FindObjectsSortMode.None).ToList();
     }
+
+    public Material GetMaterial()
+    {
+        return _computeDispatcher.GetMaterial();
+    }
     
     // Dispatch in LateUpdate so FogVolumes can update
     // their OcclusionTextures first

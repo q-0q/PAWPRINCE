@@ -8,23 +8,35 @@ public class FogVolume : MonoBehaviour
 {
     public float OcclusionFarClipPlane = 1000f;
     public float OcclusionNearClipPlane = -1000f;
+    
     [System.NonSerialized]
-    public RenderTexture OutputVolumeTexture;
+    public RenderTexture VolumeTexture;
     [System.NonSerialized]
     public RenderTexture OcclusionTexture;
 
     public Vector3 OcclusionCameraRotationEulers = new Vector3(90, 0, 0);
     
     private Camera _occlusionCamera;
+    private MeshRenderer _meshRenderer;
     
     // Start is called before the first frame update
     void Start()
     {
         _occlusionCamera = CreateOcclusionCamera();
-        OutputVolumeTexture = CreateVolumeTexture(256);
+        VolumeTexture = CreateVolumeTexture(256);
         OcclusionTexture = CreateOcclusionTexture(256);
         
         _occlusionCamera.targetTexture = OcclusionTexture;
+        
+        // TODO: make meshRenderer as code
+        _meshRenderer = GetComponentInChildren<MeshRenderer>();
+        if (_meshRenderer == null)
+        {
+            Debug.LogError("FogVolume has no MeshRenderer in its children");
+            return;
+        }
+        
+        _meshRenderer.SetMaterials(new List<Material>(){FogSingleton.Singleton.GetMaterial()});
     }
     
     private RenderTexture CreateVolumeTexture(int size)
@@ -80,9 +92,8 @@ public class FogVolume : MonoBehaviour
         return worldBounds;
     }
 
-    public void SetMaterialProps(MaterialPropertyBlock props)
+    public void SetMeshRendererProps(MaterialPropertyBlock props)
     {
-        var renderer = GetComponent<MeshRenderer>();
-        renderer.SetPropertyBlock(props);
+        _meshRenderer.SetPropertyBlock(props);
     }
 }

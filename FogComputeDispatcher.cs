@@ -22,6 +22,15 @@ public class FogComputeDispatcher
         if (_computeShader is null) return;
         if (_observerBuffer is null) return;
         
-        _computeShader.SetTexture(_kernelID, "OcclusionTex", volume.OcclusionTexture);
+        _computeShader.SetTexture(_kernelID, "OcclusionTexture", volume.OcclusionTexture);
+        
+        var props = new MaterialPropertyBlock();
+        props.SetTexture("VolumeTexture", volume.VolumeTexture);
+        volume.SetMeshRendererProps(props);
+    }
+
+    public Material GetMaterial()
+    {
+        return _material;
     }
 }
