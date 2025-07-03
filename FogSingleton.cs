@@ -6,10 +6,16 @@ using UnityEngine;
 
 public class FogSingleton : MonoBehaviour
 {
+
+    [Range(1, 10)] public float OcclusionResolution;
+    [Range(1, 10)] public float VolumeResolution;
+    
     [System.NonSerialized]
     public static FogSingleton Singleton;
     private FogComputeDispatcher _computeDispatcher;
     private List<FogVolume> _volumes;
+    
+    
 
     private void Awake()
     {
@@ -20,21 +26,23 @@ public class FogSingleton : MonoBehaviour
         }
         
         Singleton = this;
-        var computeShader = Resources.Load<ComputeShader>("Shaders/ComputeShaders/");
-        var material = Resources.Load("Tes");
-        
-        // _computeDispatcher = new FogComputeDispatcher(computeShader, material);
+        var computeShader = Resources.Load<ComputeShader>("Shaders/ComputeShaders/FogCompute");
+        var material = Resources.Load<Material>("Shaders/Materials/FogMaterial");
+        _computeDispatcher = new FogComputeDispatcher(computeShader, material);
     }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         _volumes = FindObjectsByType<FogVolume>(FindObjectsSortMode.None).ToList();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    // Dispatch in LateUpdate so FogVolumes can update
+    // their OcclusionTextures first
+    void LateUpdate()
     {
-        
+        foreach (var volume in _volumes)
+        {
+            _computeDispatcher.Dispatch(volume);
+        }
     }
 }

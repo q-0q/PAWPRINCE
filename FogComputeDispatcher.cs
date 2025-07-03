@@ -17,15 +17,11 @@ public class FogComputeDispatcher
         _observerBuffer = null;
     }
     
-    // Start is called before the first frame update
-    void Start()
+    public void Dispatch(FogVolume volume)
     {
+        if (_computeShader is null) return;
+        if (_observerBuffer is null) return;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _computeShader.SetTexture(_kernelID, "OcclusionTex", volume.OcclusionTexture);
     }
 }
