@@ -120,4 +120,12 @@ public class FogVolume : MonoBehaviour
         if (component.gameObject != gameObject) Destroy(component.gameObject);
         Destroy(component);
     }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(0f, 0f, 1f, 0.1f);
+        Gizmos.DrawCube(transform.position, transform.lossyScale);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, transform.lossyScale);
+    }
 }

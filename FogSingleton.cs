@@ -9,7 +9,7 @@ public class FogSingleton : MonoBehaviour
 {
 
     public Mesh VolumeMesh;
-    private float _resolution = 16f;
+    private float _resolution = 8f;
     
     [System.NonSerialized]
     public static FogSingleton Singleton;
