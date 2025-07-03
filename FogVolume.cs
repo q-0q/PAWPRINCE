@@ -10,9 +10,9 @@ public class FogVolume : MonoBehaviour
     public float OcclusionFarClipPlane = 1000f;
     public float OcclusionNearClipPlane = -1000f;
     
-    [System.NonSerialized]
+    // [System.NonSerialized]
     public RenderTexture VolumeTexture;
-    [System.NonSerialized]
+    // [System.NonSerialized]
     public RenderTexture OcclusionTexture;
 
     public Vector3 OcclusionCameraRotationEulers = new Vector3(90, 0, 0);

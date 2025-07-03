@@ -1,14 +1,27 @@
-// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-// Create a RenderTexture with enableRandomWrite flag and set it
-// with cs.SetTexture
-RWTexture2D<float4> Result;
+RWTexture3D<float> VolumeTexture;
+Texture2D<float> OcclusionTexture;
+float2 OcclusionTextureSize;
+SamplerState sampler_OcclusionTexture;
+
 
 [numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void CSMain(uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+    if (id.x >= OcclusionTextureSize.x || id.y >= OcclusionTextureSize.y) return;
 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    float occlusion_norm_x = (id.x + 0.5f) / OcclusionTextureSize.x;
+    float occlusion_norm_y = (id.z + 0.5f) / OcclusionTextureSize.y;
+    const float2 occlusion_norm = float2(occlusion_norm_x, occlusion_norm_y);
+
+    const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, occlusion_norm, 0).r;
+    float output = 0.0;
+
+    if (occlusion < 0.5)
+    {
+        output = 1.0;
+    }
+    
+    VolumeTexture[id.xyz] = output;
 }
