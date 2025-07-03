@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Serialization;
@@ -25,18 +26,10 @@ public class FogVolume : MonoBehaviour
         _occlusionCamera = CreateOcclusionCamera();
         VolumeTexture = CreateVolumeTexture(256);
         OcclusionTexture = CreateOcclusionTexture(256);
+        _meshRenderer = CreateMeshRenderer();
         
         _occlusionCamera.targetTexture = OcclusionTexture;
         
-        // TODO: make meshRenderer as code
-        _meshRenderer = GetComponentInChildren<MeshRenderer>();
-        if (_meshRenderer == null)
-        {
-            Debug.LogError("FogVolume has no MeshRenderer in its children");
-            return;
-        }
-        
-        _meshRenderer.SetMaterials(new List<Material>(){FogSingleton.Singleton.GetMaterial()});
     }
     
     private RenderTexture CreateVolumeTexture(int size)
@@ -85,15 +78,43 @@ public class FogVolume : MonoBehaviour
         return occlusionCamera;
     }
 
-    public Bounds GetWorldBounds()
+    private MeshRenderer CreateMeshRenderer()
     {
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        Bounds worldBounds = meshRenderer.bounds;
-        return worldBounds;
-    }
 
+        foreach (var c in GetComponentsInChildren<MeshRenderer>())
+        {
+            CleanUpComponent(c);
+        }
+        
+        foreach (var c in GetComponentsInChildren<MeshFilter>())
+        {
+            CleanUpComponent(c);
+        }
+        
+        var meshRendererGameObject = new GameObject("MeshRenderer");
+        var meshRenderer = meshRendererGameObject.AddComponent<MeshRenderer>();
+        
+        meshRendererGameObject.transform.SetParent(transform);
+        meshRendererGameObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        meshRendererGameObject.transform.localScale = Vector3.one;
+        
+        
+        var meshFilter = meshRendererGameObject.AddComponent<MeshFilter>();
+        meshFilter.mesh = FogSingleton.Singleton.VolumeMesh;
+        meshRenderer.SetMaterials(new List<Material>(){FogSingleton.Singleton.GetMaterial()});
+        
+        return meshRenderer;
+    }
+    
     public void SetMeshRendererProps(MaterialPropertyBlock props)
     {
         _meshRenderer.SetPropertyBlock(props);
+    }
+
+    private void CleanUpComponent(Component component)
+    {
+        Debug.Log("Removing Editor-created " + component.GetType() + " from FogVolume");
+        if (component.gameObject != gameObject) Destroy(component.gameObject);
+        Destroy(component);
     }
 }

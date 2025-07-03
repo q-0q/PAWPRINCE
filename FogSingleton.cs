@@ -7,6 +7,7 @@ using UnityEngine;
 public class FogSingleton : MonoBehaviour
 {
 
+    public Mesh VolumeMesh;
     [Range(1, 10)] public float OcclusionResolution;
     [Range(1, 10)] public float VolumeResolution;
     
