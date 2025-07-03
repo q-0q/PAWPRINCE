@@ -50,7 +50,6 @@ public class FogVolume : MonoBehaviour
     private RenderTexture CreateOcclusionTexture()
     {
         var size = transform.localScale * FogSingleton.Singleton.GetResolution();
-        Debug.Log(transform.localScale + " : " + FogSingleton.Singleton.GetResolution());
         
         var rt = new RenderTexture((int)size.x, (int)size.z, 0, GraphicsFormat.R8G8B8A8_UNorm)
         {
