@@ -44,7 +44,6 @@ Shader "Unlit/FogShader"
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _VolumeTexture);
                 
-                // o.localSpacePos = mul(unity_ObjectToWorld, v.vertex);
                 o.localSpacePos = v.vertex;
 
 

@@ -9,12 +9,13 @@ public class FogSingleton : MonoBehaviour
 {
 
     public Mesh VolumeMesh;
-    private float _resolution = 8f;
+    private float _resolution = 16f;
     
     [System.NonSerialized]
     public static FogSingleton Singleton;
     private FogComputeDispatcher _computeDispatcher;
     private List<FogVolume> _volumes;
+    private List<Observer> _observers;
     
     
 
@@ -35,6 +36,22 @@ public class FogSingleton : MonoBehaviour
     void Start()
     {
         _volumes = FindObjectsByType<FogVolume>(FindObjectsSortMode.None).ToList();
+        _observers = FindObjectsByType<Observer>(FindObjectsSortMode.None).ToList();
+    }
+
+    private void Update()
+    {
+        _computeDispatcher.SetObservers(_observers);
+    }
+
+    // Dispatch in LateUpdate so FogVolumes can update
+    // their OcclusionTextures first
+    void LateUpdate()
+    {
+        foreach (var volume in _volumes)
+        {
+            _computeDispatcher.Dispatch(volume);
+        }
     }
 
     public Material GetMaterial()
@@ -47,13 +64,4 @@ public class FogSingleton : MonoBehaviour
         return _resolution;
     }
     
-    // Dispatch in LateUpdate so FogVolumes can update
-    // their OcclusionTextures first
-    void LateUpdate()
-    {
-        foreach (var volume in _volumes)
-        {
-            _computeDispatcher.Dispatch(volume);
-        }
-    }
 }

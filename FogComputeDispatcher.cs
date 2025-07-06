@@ -36,6 +36,25 @@ public class FogComputeDispatcher
         int groupsZ = volume.VolumeTexture.volumeDepth;
         _computeShader.Dispatch(_kernelID, groupsX, groupsY, groupsZ);
     }
+    
+    public void SetObservers(List<Observer> observers)
+    {
+        if (_observerBuffer != null)
+            _observerBuffer.Release();
+    
+        _computeShader.SetInt("ObserverCount", observers.Count);
+    
+        _observerBuffer = new ComputeBuffer(observers.Count, sizeof(float) * 4);
+        Vector4[] data = new Vector4[observers.Count];
+        for (int i = 0; i < observers.Count; i++)
+        {
+            var pos = observers[i].transform.position;
+            data[i] = new Vector4(pos.x, pos.y, pos.z, observers[i].Range); // x, z, y, radius
+        }
+    
+        _observerBuffer.SetData(data);
+        
+    }
 
     public Material GetMaterial()
     {

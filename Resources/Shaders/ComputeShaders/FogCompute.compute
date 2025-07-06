@@ -2,8 +2,11 @@
 
 RWTexture3D<float> VolumeTexture;
 Texture2D<float> OcclusionTexture;
-float2 OcclusionTextureSize;
+float3 OcclusionTextureSize;
 SamplerState sampler_OcclusionTexture;
+
+StructuredBuffer<float4> Observers;
+int ObserverCount;
 
 
 [numthreads(8,8,1)]
@@ -11,13 +14,28 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= OcclusionTextureSize.x || id.y >= OcclusionTextureSize.y) return;
 
+
+    // for (int i = 0; i < ObserverCount; ++i)
+    // {
+    //     float3 observerPos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
+    //     float radius = Observers[i].w;
+    //
+    //     float3 toVoxel = id.xyz - observerPos;
+    //     float dist = length(toVoxel);
+    //
+    //     if (dist < radius)
+    //     {
+    //         VolumeTexture[id.xyz] = 0.5;
+    //         return;
+    //     }
+    // }
+
+    
     float occlusion_norm_x = (id.x + 0.5f) / OcclusionTextureSize.x;
     float occlusion_norm_y = (id.z + 0.5f) / OcclusionTextureSize.y;
     const float2 occlusion_norm = float2(occlusion_norm_x, occlusion_norm_y);
-
     const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, occlusion_norm, 0).r;
     float output = 0.0;
-
     if (occlusion < 0.5)
     {
         output = 1.0;
