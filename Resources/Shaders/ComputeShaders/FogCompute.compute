@@ -12,7 +12,7 @@ int ObserverCount;
 [numthreads(8,8,1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-    if (id.x >= VolumeTextureSize.x || id.y >= VolumeTextureSize.y) return;
+    if (id.x >= VolumeTextureSize.x || id.y >= VolumeTextureSize.y || id.z >= VolumeTextureSize.z) return;
 
 
     // for (int i = 0; i < ObserverCount; ++i)
@@ -31,10 +31,12 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     // }
 
     
-    float occlusion_norm_x = (id.x + 0.5f) / VolumeTextureSize.x;
-    float occlusion_norm_y = (id.z + 0.5f) / VolumeTextureSize.z;
-    const float2 occlusion_norm = float2(occlusion_norm_x, occlusion_norm_y);
-    const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, occlusion_norm, 0).r;
+    float norm_x = (id.x + 0.5f) / VolumeTextureSize.x;
+    float norm_y = (id.y + 0.5f) / VolumeTextureSize.y;
+    float norm_z = (id.z + 0.5f) / VolumeTextureSize.z;
+    const float3 norm = float3(norm_x, norm_y, norm_z);
+    
+    const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
     float output = 0.0;
     if (occlusion < 0.5)
     {

@@ -72,7 +72,8 @@ public class FogVolume : MonoBehaviour
         occlusionCameraGameObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.Euler(OcclusionCameraRotationEulers));
 
         occlusionCamera.orthographic = true;
-        occlusionCamera.orthographicSize = 5;
+
+        occlusionCamera.orthographicSize = transform.localScale.z / 2f; // I don't really know why, but this just works
         occlusionCamera.nearClipPlane = OcclusionNearClipPlane;
         occlusionCamera.farClipPlane = OcclusionFarClipPlane;
         occlusionCamera.targetTexture = OcclusionTexture;
