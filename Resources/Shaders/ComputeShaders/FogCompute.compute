@@ -4,6 +4,7 @@ RWTexture3D<float> VolumeTexture;
 Texture2D<float> OcclusionTexture;
 float3 VolumeTextureSize;
 SamplerState sampler_OcclusionTexture;
+float4x4 _VolumeToWorld;
 
 StructuredBuffer<float4> Observers;
 int ObserverCount;
@@ -13,28 +14,27 @@ int ObserverCount;
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
     if (id.x >= VolumeTextureSize.x || id.y >= VolumeTextureSize.y || id.z >= VolumeTextureSize.z) return;
-
-
-    // for (int i = 0; i < ObserverCount; ++i)
-    // {
-    //     float3 observerPos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
-    //     float radius = Observers[i].w;
-    //
-    //     float3 toVoxel = id.xyz - observerPos;
-    //     float dist = length(toVoxel);
-    //
-    //     if (dist < radius)
-    //     {
-    //         VolumeTexture[id.xyz] = 0.5;
-    //         return;
-    //     }
-    // }
-
     
-    float norm_x = (id.x + 0.5f) / VolumeTextureSize.x;
-    float norm_y = (id.y + 0.5f) / VolumeTextureSize.y;
-    float norm_z = (id.z + 0.5f) / VolumeTextureSize.z;
-    const float3 norm = float3(norm_x, norm_y, norm_z);
+    // float norm_x = (id.x + 0.5f) / VolumeTextureSize.x;
+    // float norm_y = (id.y + 0.5f) / VolumeTextureSize.y;
+    // float norm_z = (id.z + 0.5f) / VolumeTextureSize.z;
+    // const float3 norm = float3(norm_x, norm_y, norm_z);
+    float3 norm = (float3(id) + 0.5f) / VolumeTextureSize;
+
+    float4 localPos = float4((float3(id) / VolumeTextureSize) - 0.5, 1.0);
+    float3 voxelWorldPos = mul(_VolumeToWorld, localPos).xyz;
+    
+    for (int i = 0; i < ObserverCount; ++i)
+    {
+        float3 observerPos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
+        float dist = distance(observerPos, voxelWorldPos);
+
+        if (dist < Observers[i].w)
+        {
+            VolumeTexture[id.xyz] = 1.0;
+            return;;
+        }
+    }
     
     const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
     float output = 0.0;

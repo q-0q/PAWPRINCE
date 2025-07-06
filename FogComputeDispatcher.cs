@@ -20,11 +20,14 @@ public class FogComputeDispatcher
     public void Dispatch(FogVolume volume)
     {
         if (_computeShader is null) return;
-        // if (_observerBuffer is null) return;
+        if (_observerBuffer is null) return;
         
         _computeShader.SetTexture(_kernelID, "OcclusionTexture", volume.OcclusionTexture);
         _computeShader.SetTexture(_kernelID, "VolumeTexture", volume.VolumeTexture);
         _computeShader.SetInts("VolumeTextureSize", volume.VolumeTexture.width, volume.VolumeTexture.height, volume.VolumeTexture.volumeDepth);
+        _computeShader.SetBuffer(_kernelID, "Observers", _observerBuffer);
+        var volumeToWorld = volume.transform.localToWorldMatrix;
+        _computeShader.SetMatrix("_VolumeToWorld", volumeToWorld);
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);
