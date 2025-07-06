@@ -24,7 +24,7 @@ public class FogComputeDispatcher
         
         _computeShader.SetTexture(_kernelID, "OcclusionTexture", volume.OcclusionTexture);
         _computeShader.SetTexture(_kernelID, "VolumeTexture", volume.VolumeTexture);
-        _computeShader.SetInts("OcclusionTextureSize", volume.OcclusionTexture.width, volume.OcclusionTexture.height);
+        _computeShader.SetInts("VolumeTextureSize", volume.VolumeTexture.width, volume.VolumeTexture.height, volume.VolumeTexture.volumeDepth);
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);
