@@ -31,12 +31,12 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         if (dist > Observers[i].w)
             continue;
         
-        // const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
-        // if (occlusion < 0.5)
-        // {
-        //     output = 1.0;
-        //     break;
-        // }
+        const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
+        if (occlusion < 0.5)
+        {
+            output = 1.0;
+            break;
+        }
         
         const int steps = 32;
         bool blocked = false;
