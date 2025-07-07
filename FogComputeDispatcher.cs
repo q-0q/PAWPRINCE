@@ -32,7 +32,7 @@ public class FogComputeDispatcher
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);
-        props.SetVector("_VolumeTextureSize", new Vector4(volume.VolumeTexture.width, volume.VolumeTexture.height, volume.VolumeTexture.volumeDepth));
+        // props.SetVector("_VolumeTextureSize", new Vector4(volume.VolumeTexture.width, volume.VolumeTexture.height, volume.VolumeTexture.volumeDepth));
         volume.SetMeshRendererProps(props);
         
         int groupsX = Mathf.CeilToInt(volume.VolumeTexture.width / 8.0f);

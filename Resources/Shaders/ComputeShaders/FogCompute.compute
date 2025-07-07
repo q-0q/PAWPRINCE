@@ -21,7 +21,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     const float4 local_pos = float4((float3(id) / VolumeTextureSize) - 0.5, 1.0);
     const float3 voxel_world_pos = mul(_VolumeToWorld, local_pos).xyz;
     
-    float output = 0.0;
+    float output = 1.0;
     
     for (int i = 0; i < ObserverCount; ++i)
     {
@@ -34,7 +34,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
         if (occlusion < 0.5)
         {
-            output = 1.0;
+            output = 0.0;
             break;
         }
         
@@ -57,7 +57,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         }
         if (!blocked)
         {
-            output = 1.0f;
+            output = 0.0f;
             break;
         }
     }

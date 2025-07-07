@@ -29,7 +29,7 @@ public class FogSingleton : MonoBehaviour
         
         Singleton = this;
         var computeShader = Resources.Load<ComputeShader>("Shaders/ComputeShaders/FogCompute");
-        var material = Resources.Load<Material>("Shaders/Materials/FogMaterial");
+        var material = Resources.Load<Material>("Shaders/Materials/VolumeMaterial");
         _computeDispatcher = new FogComputeDispatcher(computeShader, material);
     }
     
