@@ -78,6 +78,8 @@ public class FogVolume : MonoBehaviour
         occlusionCamera.farClipPlane = OcclusionFarClipPlane;
         occlusionCamera.targetTexture = OcclusionTexture;
         occlusionCamera.cullingMask = LayerMask.GetMask("Occluders");
+        occlusionCamera.backgroundColor = Color.white;
+        occlusionCamera.clearFlags = CameraClearFlags.SolidColor;
 
         return occlusionCamera;
     }
