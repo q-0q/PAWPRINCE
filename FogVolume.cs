@@ -125,8 +125,9 @@ public class FogVolume : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = new Color(0f, 0f, 1f, 0.1f);
-        Gizmos.DrawCube(transform.position, transform.lossyScale);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position, transform.lossyScale);
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawCube(Vector3.zero, Vector3.one);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
     }
 }

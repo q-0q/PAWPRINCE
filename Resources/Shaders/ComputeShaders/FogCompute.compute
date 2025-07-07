@@ -38,7 +38,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
             break;
         }
         
-        const int steps = 32;
+        const int steps = 64;
         bool blocked = false;
         for (int s = 0; s < steps; ++s)
         {

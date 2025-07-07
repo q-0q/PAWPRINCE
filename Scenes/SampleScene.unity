@@ -122,6 +122,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &181628957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 181628959}
+  - component: {fileID: 181628958}
+  m_Layer: 0
+  m_Name: FogVolume (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &181628958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181628957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4dabc85984364042be5a713e6c335de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OcclusionFarClipPlane: 1000
+  OcclusionNearClipPlane: -1000
+  VolumeTexture: {fileID: 0}
+  OcclusionTexture: {fileID: 0}
+  OcclusionCameraRotationEulers: {x: 90, y: 0, z: 0}
+--- !u!4 &181628959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181628957}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.44180113, y: -0.62898654, z: 0.49000794, w: 0.41119322}
+  m_LocalPosition: {x: 0.18, y: 6.04, z: 5.82}
+  m_LocalScale: {x: 12, y: 2, z: 10}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 14.66, y: -100.821, z: 82.313}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,6 +636,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1817481137}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &521728244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 521728246}
+  - component: {fileID: 521728245}
+  m_Layer: 0
+  m_Name: FogVolume (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &521728245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521728244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4dabc85984364042be5a713e6c335de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OcclusionFarClipPlane: 1000
+  OcclusionNearClipPlane: -1000
+  VolumeTexture: {fileID: 0}
+  OcclusionTexture: {fileID: 0}
+  OcclusionCameraRotationEulers: {x: 90, y: 0, z: 0}
+--- !u!4 &521728246
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521728244}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.21281973, y: 0.09084731, z: 0.6743203, w: 0.7012466}
+  m_LocalPosition: {x: 5.91, y: 6.04, z: 0}
+  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: -24.898, y: -10.134, z: 90}
 --- !u!1 &625535609
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,55 +783,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1219546584
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1219546586}
-  - component: {fileID: 1219546585}
-  m_Layer: 0
-  m_Name: FogVolume (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1219546585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1219546584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4dabc85984364042be5a713e6c335de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OcclusionFarClipPlane: 1000
-  OcclusionNearClipPlane: -1000
-  VolumeTexture: {fileID: 0}
-  OcclusionTexture: {fileID: 0}
-  OcclusionCameraRotationEulers: {x: 90, y: 0, z: 0}
---- !u!4 &1219546586
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1219546584}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.46584523, z: -0, w: 0.88486624}
-  m_LocalPosition: {x: 10.73, y: 0, z: -10.34}
-  m_LocalScale: {x: 10, y: 10, z: 10}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 55.53, z: 0}
 --- !u!1 &1591746531
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,8 +957,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817481136}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.24832806, w: 0.968676}
+  m_LocalPosition: {x: 1.1263298, y: 4.744893, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -919,7 +968,7 @@ Transform:
   - {fileID: 330980283}
   - {fileID: 2092634587}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 28.757}
 --- !u!1 &1933521749
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,7 +998,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f182ccfd32745dc9457fd136f5be66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Range: 5
+  Range: 20
 --- !u!4 &1933521751
 Transform:
   m_ObjectHideFlags: 0
@@ -959,7 +1008,7 @@ Transform:
   m_GameObject: {fileID: 1933521749}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.43667853, y: -0.27483025, z: 0.191534}
+  m_LocalPosition: {x: 0.43667853, y: 4.8, z: 0.191534}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1186,4 +1235,5 @@ SceneRoots:
   - {fileID: 1591746533}
   - {fileID: 1933521751}
   - {fileID: 625535611}
-  - {fileID: 1219546586}
+  - {fileID: 521728246}
+  - {fileID: 181628959}
