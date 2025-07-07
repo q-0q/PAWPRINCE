@@ -18,15 +18,15 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     
     float3 norm = (float3(id) + 0.5f) / VolumeTextureSize;
 
-    float4 localPos = float4((float3(id) / VolumeTextureSize) - 0.5, 1.0);
-    float3 voxelWorldPos = mul(_VolumeToWorld, localPos).xyz;
+    const float4 local_pos = float4((float3(id) / VolumeTextureSize) - 0.5, 1.0);
+    const float3 voxel_world_pos = mul(_VolumeToWorld, local_pos).xyz;
     
     float output = 0.0;
     
     for (int i = 0; i < ObserverCount; ++i)
     {
-        float3 observerPos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
-        float dist = distance(observerPos, voxelWorldPos);
+        const float3 observer_pos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
+        const float dist = distance(observer_pos, voxel_world_pos);
 
         if (dist > Observers[i].w)
             continue;
@@ -42,14 +42,14 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         bool blocked = false;
         for (int s = 0; s < steps; ++s)
         {
-            float t = s / (float)(steps - 1);
-            float4 sampleWorldPos = float4(lerp(observerPos, voxelWorldPos, t), 1.0);
-            float3 sampleLocalPos = mul(_WorldToVolume, sampleWorldPos).xyz;
-            float3 sampleId = (sampleLocalPos + 0.5) * VolumeTextureSize;
-            float3 sampleNorm = (float3(sampleId) + 0.5f) / VolumeTextureSize;
-            
-            float occSample = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, sampleNorm.xz, 0).r;
-            if (occSample < 0.5f)
+            const float t = s / (float)(steps - 1);
+            const float4 sample_world_pos = float4(lerp(observer_pos, voxel_world_pos, t), 1.0);
+            const float3 sample_local_pos = mul(_WorldToVolume, sample_world_pos).xyz;
+            float3 sample_id = (sample_local_pos + 0.5) * VolumeTextureSize;
+            float3 sample_norm = (float3(sample_id) + 0.5f) / VolumeTextureSize;
+
+            const float occ_sample = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, sample_norm.xz, 0).r;
+            if (occ_sample < 0.5f)
             {
                 blocked = true;
                 break;
