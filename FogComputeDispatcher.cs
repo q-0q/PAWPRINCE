@@ -28,6 +28,7 @@ public class FogComputeDispatcher
         _computeShader.SetBuffer(_kernelID, "Observers", _observerBuffer);
         var volumeToWorld = volume.transform.localToWorldMatrix;
         _computeShader.SetMatrix("_VolumeToWorld", volumeToWorld);
+        _computeShader.SetMatrix("_WorldToVolume", volumeToWorld.inverse);
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);

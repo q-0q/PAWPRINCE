@@ -5,6 +5,7 @@ Texture2D<float> OcclusionTexture;
 float3 VolumeTextureSize;
 SamplerState sampler_OcclusionTexture;
 float4x4 _VolumeToWorld;
+float4x4 _WorldToVolume;
 
 StructuredBuffer<float4> Observers;
 int ObserverCount;
@@ -20,24 +21,47 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     float4 localPos = float4((float3(id) / VolumeTextureSize) - 0.5, 1.0);
     float3 voxelWorldPos = mul(_VolumeToWorld, localPos).xyz;
     
+    float output = 0.0;
+    
     for (int i = 0; i < ObserverCount; ++i)
     {
         float3 observerPos = float3(Observers[i].x, Observers[i].y, Observers[i].z);
         float dist = distance(observerPos, voxelWorldPos);
 
-        if (dist < Observers[i].w)
+        if (dist > Observers[i].w)
+            continue;
+        
+        // const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
+        // if (occlusion < 0.5)
+        // {
+        //     output = 1.0;
+        //     break;
+        // }
+        
+        const int steps = 32;
+        bool blocked = false;
+        for (int s = 0; s < steps; ++s)
         {
-            VolumeTexture[id.xyz] = 1.0;
-            return;;
+            float t = s / (float)(steps - 1);
+            float4 sampleWorldPos = float4(lerp(observerPos, voxelWorldPos, t), 1.0);
+            float3 sampleLocalPos = mul(_WorldToVolume, sampleWorldPos).xyz;
+            float3 sampleId = (sampleLocalPos + 0.5) * VolumeTextureSize;
+            float3 sampleNorm = (float3(sampleId) + 0.5f) / VolumeTextureSize;
+            
+            float occSample = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, sampleNorm.xz, 0).r;
+            if (occSample < 0.5f)
+            {
+                blocked = true;
+                break;
+            }
+        }
+        if (!blocked)
+        {
+            output = 1.0f;
+            break;
         }
     }
     
-    const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
-    float output = 0.0;
-    if (occlusion < 0.5)
-    {
-        output = 1.0;
-    }
-    
+
     VolumeTexture[id.xyz] = output;
 }
