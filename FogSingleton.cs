@@ -28,6 +28,7 @@ public class FogSingleton : MonoBehaviour
         }
         
         Singleton = this;
+        Camera.main.depthTextureMode |= DepthTextureMode.Depth;
         var computeShader = Resources.Load<ComputeShader>("Shaders/ComputeShaders/FogCompute");
         var material = Resources.Load<Material>("Shaders/Materials/VolumeMaterial");
         _computeDispatcher = new FogComputeDispatcher(computeShader, material);
