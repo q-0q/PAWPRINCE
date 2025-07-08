@@ -4,6 +4,7 @@ Shader "Unlit/VolumeShader"
     {
         _VolumeTexture("3D Texture", 3D) = "white" {}
         _VolumeTextureSize("Texture Size", Vector) = (1,1,1)
+        _Color ("Color", Color) = (0, 0, 0)
         _Alpha("Alpha", Float) = 0.02
         _StepSize("Step Size", Float) = 0.01
     }
@@ -12,6 +13,7 @@ Shader "Unlit/VolumeShader"
         Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
         Blend One OneMinusSrcAlpha
         LOD 100
+        ZTest Less
 
         Pass
         {
@@ -28,6 +30,7 @@ Shader "Unlit/VolumeShader"
             float3 _VolumeTextureSize;
             float _Alpha;
             float _StepSize;
+            float4 _Color;
 
             struct appdata
             {
@@ -73,7 +76,7 @@ Shader "Unlit/VolumeShader"
                     if (max(abs(pos.x), max(abs(pos.y), abs(pos.z))) < 0.5f + EPSILON)
                     {
                         float3 texCoord = pos + float3(0.5, 0.5, 0.5); // Convert [-0.5, 0.5] to [0,1]
-                        float4 sampleCol = tex3D(_VolumeTexture, texCoord);
+                        float4 sampleCol = tex3D(_VolumeTexture, texCoord) * _Color;
                         sampleCol.a *= _Alpha;
                         accumulatedColor = BlendUnder(accumulatedColor, sampleCol);
 
