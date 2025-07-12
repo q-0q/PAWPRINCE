@@ -5,15 +5,17 @@ public abstract class Fsm : MonoBehaviour
 {
     public Wasp.Machine<int, int> machine;
     private float _timeInCurrentState;
-    private StateMapConfig _stateMapConfig;
+    protected StateMapConfig stateMapConfig;
 
-    void Start()
+    protected virtual void Start()
     {
         _timeInCurrentState = 0;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
+        var behavior = stateMapConfig.Behaviors.Get(machine.State());
+        behavior();
         IncrementClockByAmount(Time.deltaTime);
     }
 
@@ -22,19 +24,20 @@ public abstract class Fsm : MonoBehaviour
         public static int Any;
     }
     
-    public class Trigger : InheritableEnum
+    public class FsmTrigger : InheritableEnum
     {
         public static int InputDirection;
+        public static int InputNoDirection;
         public static int InputJump;
         public static int InputInteract;
     }
 
-    public virtual void SetupStateMaps()
+    protected virtual void SetupStateMaps()
     {
-        _stateMapConfig = new StateMapConfig();
+        stateMapConfig = new StateMapConfig();
     }
 
-    public virtual void SetupMachine()
+    protected virtual void SetupMachine()
     {
         machine.OnTransitioned(OnStateChanged);
     }

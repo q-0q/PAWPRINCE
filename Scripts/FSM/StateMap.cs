@@ -25,6 +25,16 @@ public class StateMap<T>
 
         return heaviestBinding != null ? heaviestBinding.Value() : _default;
     }
+
+    public void Add(int state, T value, int weight = 0)
+    {
+        if (!_dictionary.ContainsKey(state)) _dictionary[state] = new List<Binding<T>>();
+        foreach (var _ in _dictionary[state].Where(binding => binding.Weight() == weight))
+        {
+            Debug.LogError("StateMap binding weight collision on weight " + weight);
+        }
+        _dictionary[state].Add(new Binding<T>(value, weight));
+    }
 }
 
 public class Binding<T>
@@ -33,8 +43,8 @@ public class Binding<T>
     private readonly int _weight;
     public Binding(T value, int weight = 0)
     {
-        _value = _value;
-        _weight = _weight;
+        _value = value;
+        _weight = weight;
     }
 
     public int Weight()
