@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class StateMap<T>
+public class StateMap<TState, T>
 {
-    private Dictionary<int, List<Binding<T>>> _dictionary;
+    private Dictionary<TState, List<Binding<T>>> _dictionary;
     private T _default;
     
     public StateMap(T @default)
     {
-        _dictionary = new Dictionary<int, List<Binding<T>>>();
+        _dictionary = new Dictionary<TState, List<Binding<T>>>();
         _default = @default;
     }
     
-    public T Get(int state)
+    public T Get(TState state)
     {
         if (!_dictionary.TryGetValue(state, out var bindings))
             return _default;
@@ -26,8 +26,9 @@ public class StateMap<T>
         return heaviestBinding != null ? heaviestBinding.Value() : _default;
     }
 
-    public void Add(int state, T value, int weight = 0)
+    public void Add(TState state, T value, int weight = 0)
     {
+        Debug.Log("Adding to state: " + state);
         if (!_dictionary.ContainsKey(state)) _dictionary[state] = new List<Binding<T>>();
         foreach (var _ in _dictionary[state].Where(binding => binding.Weight() == weight))
         {

@@ -1,43 +1,34 @@
 using System;
 using UnityEngine;
 using Wasp;
-public abstract class Fsm : MonoBehaviour
+public class Fsm<TState, TTrigger>
 {
-    public Wasp.Machine<int, int> machine;
+    public Wasp.Machine<TState, TTrigger> machine;
     private float _timeInCurrentState;
-    protected StateMapConfig stateMapConfig;
+    public StateMapConfig<TState> stateMapConfig;
 
-    protected virtual void Start()
+
+    public Fsm(TState initState)
     {
+        machine = new Machine<TState, TTrigger>(initState);
         _timeInCurrentState = 0;
     }
-
-    protected virtual void Update()
+    
+    public void Update()
     {
         var behavior = stateMapConfig.Behaviors.Get(machine.State());
-        behavior();
+        behavior?.Invoke();
         IncrementClockByAmount(Time.deltaTime);
     }
-
-    public class FsmState : InheritableEnum
-    {
-        public static int Any;
-    }
     
-    public class FsmTrigger : InheritableEnum
+    public void SetupStateMaps()
     {
-        public static int InputDirection;
-        public static int InputNoDirection;
-        public static int InputJump;
-        public static int InputInteract;
+        stateMapConfig = new StateMapConfig<TState>();
+        stateMapConfig.Name = new StateMap<TState, string>("No state name provided");
+        stateMapConfig.Behaviors = new StateMap<TState, StateMapConfig<TState>.Behavior>(null);
     }
 
-    protected virtual void SetupStateMaps()
-    {
-        stateMapConfig = new StateMapConfig();
-    }
-
-    protected virtual void SetupMachine()
+    public void SetupMachine()
     {
         machine.OnTransitioned(OnStateChanged);
     }
@@ -46,14 +37,13 @@ public abstract class Fsm : MonoBehaviour
     {
         return _timeInCurrentState;
     }
-
     
-    protected virtual void OnStateChanged(TriggerParams? triggerParams)
+    private void OnStateChanged(TriggerParams? triggerParams)
     {
         _timeInCurrentState = 0;
     }
-    
-    public virtual void IncrementClockByAmount(float amount)
+
+    private void IncrementClockByAmount(float amount)
     {
         _timeInCurrentState += amount;
     }

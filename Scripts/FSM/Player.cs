@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : Fsm
+public class Player : MonoBehaviour
 {
     public float _moveSpeed;
     public float _rotationSpeed;
@@ -9,45 +9,56 @@ public class Player : Fsm
     private Camera _camera;
     private PlayerInput _playerInput;
 
-    public class PlayerState : FsmState
-    {
-        public static int Idle;
-        public static int Walking;
-    }
+    private Fsm<State, Trigger> _fsm;
 
-    public class PlayerTrigger : FsmTrigger
+    public enum State
     {
-        
+        Idle,
+        Walking
     }
     
-    protected override void Start()
+    public enum Trigger
     {
-        base.Start();
+        InputDirection,
+        InputNoDirection
+    }
+    
+    void Start()
+    {
         _camera = Camera.main;
         _playerInput = GetComponent<PlayerInput>();
-        
+
+        _fsm = new Fsm<State, Trigger>(State.Idle);
         SetupStateMaps();
         SetupMachine();
     }
 
-    protected override void Update()
+    void Update()
     {
-        Movement();
+        FireTriggers();
+        _fsm.Update();
     }
 
-    protected override void SetupStateMaps()
+    void SetupStateMaps()
     {
-        base.SetupStateMaps();
-        stateMapConfig.Name.Add(PlayerState.Walking, "Walking");
-        stateMapConfig.Name.Add(PlayerState.Idle, "Idle");
+        _fsm.SetupStateMaps();
+        _fsm.stateMapConfig.Name.Add(State.Walking, "Walking");
+        _fsm.stateMapConfig.Name.Add(State.Idle, "Idle");
+        _fsm.stateMapConfig.Behaviors.Add(State.Walking, WalkingBehavior);
     }
     
-    protected override void SetupMachine()
+    void SetupMachine()
     {
-        base.SetupMachine();
+        _fsm.SetupMachine();
+        _fsm.machine.Configure(State.Idle)
+            .Permit(Trigger.InputDirection, State.Walking);
+        
+        _fsm.machine.Configure(State.Walking)
+            .Permit(Trigger.InputNoDirection, State.Idle);
+
     }
 
-    void Movement()
+    void WalkingBehavior()
     {
         var moveValue = ComputeMoveValue();
         if (moveValue.magnitude < 0.01f) return;
@@ -55,6 +66,7 @@ public class Player : Fsm
         transform.position += moveValue;
     }
 
+    
     private Vector3 ComputeMoveValue()
     {
         Vector2 moveValue2 = _playerInput.actions["Move"].ReadValue<Vector2>();
@@ -95,5 +107,11 @@ public class Player : Fsm
         }
 
         return desiredMove;
+    }
+
+    void FireTriggers()
+    {
+        Vector2 moveValue2 = _playerInput.actions["Move"].ReadValue<Vector2>();
+        _fsm.machine.Fire(moveValue2.magnitude > 0.05f ? Trigger.InputDirection : Trigger.InputNoDirection);
     }
 }
