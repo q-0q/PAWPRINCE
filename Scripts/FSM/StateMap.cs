@@ -16,23 +16,29 @@ public class StateMap<TState, T>
     
     public T Get<TAny>(Fsm<TState, TAny> fsm)
     {
-        var heaviestBinding = _dictionary
+        var eligibleBindings = _dictionary
             .Where(kv => fsm.machine.IsInState(kv.Key))
             .SelectMany(kv => kv.Value)
-            .OrderByDescending(b => b.Weight())
-            .FirstOrDefault();
+            .ToList();
 
-        return heaviestBinding != null ? heaviestBinding.Value() : _default;
+        if (eligibleBindings.Count == 0)
+            return _default;
+
+        var maxWeight = eligibleBindings.Max(b => b.Weight());
+
+        var topBindings = eligibleBindings
+            .Where(b => b.Weight() == maxWeight)
+            .ToList();
+
+        if (topBindings.Count > 1)
+            Debug.LogError($"Tie detected: {topBindings.Count} bindings with weight {maxWeight}");
+
+        return topBindings[0].Value();
     }
 
     public void Add(TState state, T value, int weight = 0)
     {
-        Debug.Log("Adding to state: " + state);
         if (!_dictionary.ContainsKey(state)) _dictionary[state] = new List<Binding<T>>();
-        foreach (var _ in _dictionary[state].Where(binding => binding.Weight() == weight))
-        {
-            Debug.LogError("StateMap binding weight collision on weight " + weight);
-        }
         _dictionary[state].Add(new Binding<T>(value, weight));
     }
 }

@@ -42,11 +42,12 @@ Material:
     m_Floats:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _Metallic: 0.123
     - _ReceiveShadows: 0
-    - _Smoothness: 0
+    - _Smoothness: 0.232
     - _Surface: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.3909036, b: 0, a: 1}
-    - _Color: {r: 1, g: 0.39090356, b: 0, a: 1}
+    - _BaseColor: {r: 0.8018868, g: 0.342731, b: 0.049172327, a: 1}
+    - _Color: {r: 0.8018868, g: 0.34273094, b: 0.049172305, a: 1}
   m_BuildTextureStacks: []
