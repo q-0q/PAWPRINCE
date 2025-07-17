@@ -16,7 +16,7 @@ public class Fsm<TState, TTrigger>
     
     public void Update()
     {
-        var behavior = stateMapConfig.Behaviors.Get(machine.State());
+        var behavior = stateMapConfig.Behaviors.Get(this);
         behavior?.Invoke();
         IncrementClockByAmount(Time.deltaTime);
     }

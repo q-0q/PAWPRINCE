@@ -14,12 +14,11 @@ public class StateMap<TState, T>
         _default = @default;
     }
     
-    public T Get(TState state)
+    public T Get<TAny>(Fsm<TState, TAny> fsm)
     {
-        if (!_dictionary.TryGetValue(state, out var bindings))
-            return _default;
-
-        var heaviestBinding = bindings
+        var heaviestBinding = _dictionary
+            .Where(kv => fsm.machine.IsInState(kv.Key))
+            .SelectMany(kv => kv.Value)
             .OrderByDescending(b => b.Weight())
             .FirstOrDefault();
 

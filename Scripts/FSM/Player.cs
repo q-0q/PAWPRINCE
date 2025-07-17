@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ public class Player : MonoBehaviour
     private PlayerInput _playerInput;
 
     private Fsm<State, Trigger> _fsm;
+    private Animator _animator;
 
     public enum State
     {
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
     {
         _camera = Camera.main;
         _playerInput = GetComponent<PlayerInput>();
+        _animator = GetComponent<Animator>();
 
         _fsm = new Fsm<State, Trigger>(State.Idle);
         SetupStateMaps();
@@ -51,11 +54,12 @@ public class Player : MonoBehaviour
     {
         _fsm.SetupMachine();
         _fsm.machine.Configure(State.Idle)
-            .Permit(Trigger.InputDirection, State.Walking);
+            .Permit(Trigger.InputDirection, State.Walking)
+            .OnEntry( _ => { _animator.SetTrigger("StartIdle"); });
         
         _fsm.machine.Configure(State.Walking)
-            .Permit(Trigger.InputNoDirection, State.Idle);
-
+            .Permit(Trigger.InputNoDirection, State.Idle)
+            .OnEntry( _ => { _animator.SetTrigger("StartWalk"); });;
     }
 
     void WalkingBehavior()
