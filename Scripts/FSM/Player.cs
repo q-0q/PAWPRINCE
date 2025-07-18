@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public float _moveSpeed;
     public float _rotationSpeed;
+    public static Player Singleton;
     
     private Camera _camera;
     private PlayerInput _playerInput;
@@ -25,7 +26,12 @@ public class Player : MonoBehaviour
         InputForward,
         InputNoDirection
     }
-    
+
+    private void Awake()
+    {
+        Singleton = this;
+    }
+
     void Start()
     {
         _camera = Camera.main;
@@ -143,11 +149,28 @@ public class Player : MonoBehaviour
             }
         }
         
-        if (!Physics.SphereCast(position + desiredMove.normalized * 1.25f, radius, -transform.up, out RaycastHit groundHit, 1.5f, ~0,
-                QueryTriggerInteraction.Ignore))
+        if (!Physics.SphereCast(position + desiredMove.normalized * 1.25f, radius, -transform.up, out RaycastHit groundHit, 1.5f, ~0, QueryTriggerInteraction.Ignore))
         {
-            desiredMove = Vector3.zero;
+            // Ledge detected — try to get ledge wall normal
+            Vector3 ledgeCheckOrigin = position + desiredMove.normalized * 1.25f + Vector3.up * 0.5f;
+            Vector3 ledgeCheckDirection = Vector3.down + desiredMove.normalized * -0.5f;
+    
+            if (Physics.SphereCast(ledgeCheckOrigin, radius * 0.75f, ledgeCheckDirection.normalized, out RaycastHit ledgeHit, 2f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                // Found wall geometry beneath the ledge
+                Vector3 ledgeWallNormal = ledgeHit.normal;
+
+                // Slide along the wall like a curved cliff edge
+                Vector3 adjustedNormal = Vector3.ProjectOnPlane(ledgeWallNormal, transform.up); // flatten the normal
+                desiredMove = Vector3.ProjectOnPlane(desiredMove, adjustedNormal.normalized);
+            }
+            else
+            {
+                // No wall to slide on — just stop
+                desiredMove = Vector3.zero;
+            }
         }
+
 
         return desiredMove;
     }

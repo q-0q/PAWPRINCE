@@ -15,7 +15,7 @@ public class FogSingleton : MonoBehaviour
     public static FogSingleton Singleton;
     private FogComputeDispatcher _computeDispatcher;
     private List<FogVolume> _volumes;
-    private List<Observer> _observers;
+    public List<Observer> observers;
     
     
 
@@ -37,12 +37,12 @@ public class FogSingleton : MonoBehaviour
     void Start()
     {
         _volumes = FindObjectsByType<FogVolume>(FindObjectsSortMode.None).ToList();
-        _observers = FindObjectsByType<Observer>(FindObjectsSortMode.None).ToList();
+        observers = FindObjectsByType<Observer>(FindObjectsSortMode.None).ToList();
     }
 
     private void Update()
     {
-        _computeDispatcher.SetObservers(_observers);
+        _computeDispatcher.SetObservers(observers);
     }
 
     // Dispatch in LateUpdate so FogVolumes can update

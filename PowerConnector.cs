@@ -10,8 +10,8 @@ public class PowerConnector : MonoBehaviour
     
     private HashSet<PowerConnector> _spatialInputs;
     private HashSet<PowerConnector> _inputs;
-    
-    private bool _managed;
+
+    public bool Disabled = false;
     private bool _powered;
     
     void Awake()
@@ -52,7 +52,7 @@ public class PowerConnector : MonoBehaviour
             return false;
 
         // Base case: if current connector is a source
-        if (current.Source)
+        if (current.Source && !current.Disabled)
             return true;
 
         // Combine all inputs
