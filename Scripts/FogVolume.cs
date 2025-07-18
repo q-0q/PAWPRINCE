@@ -10,6 +10,7 @@ public class FogVolume : MonoBehaviour
 {
     public float OcclusionFarClipPlane = 1000f;
     public float OcclusionNearClipPlane = -1000f;
+    public float ObserverHeightToIgnoreOcclusion = 3f;
     
     // [System.NonSerialized]
     public RenderTexture VolumeTexture;

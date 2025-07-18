@@ -3,6 +3,7 @@
 RWTexture3D<float> VolumeTexture;
 Texture2D<float> OcclusionTexture;
 float3 VolumeTextureSize;
+float HeightToIgnoreOcclusion;
 SamplerState sampler_OcclusionTexture;
 float4x4 _VolumeToWorld;
 float4x4 _WorldToVolume;
@@ -30,6 +31,15 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 
         if (dist > Observers[i].w)
             continue;
+
+
+        const float4 observer_local_pos = mul(_WorldToVolume, float4(observer_pos, 1.0));
+
+        if (observer_local_pos.y > HeightToIgnoreOcclusion)
+        {
+            output = 0.0;
+            break;
+        }
         
         const float occlusion = OcclusionTexture.SampleLevel(sampler_OcclusionTexture, norm.xz, 0).r;
         if (occlusion < 0.5)

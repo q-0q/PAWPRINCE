@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
     {
         _fsm.SetupStateMaps();
         _fsm.stateMapConfig.Name.Add(State.Idle, "Idle");
+        _fsm.stateMapConfig.Behaviors.Add(State.Idle, IdleBehavior);
         _fsm.stateMapConfig.Behaviors.Add(State.Walking, WalkingBehavior);
     }
     
@@ -73,6 +74,8 @@ public class Player : MonoBehaviour
 
     void WalkingBehavior()
     {
+        SnapToGround();
+        
         var moveValue = ComputeMoveValue();
         if (moveValue.magnitude < 0.01f) return;
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(moveValue, transform.up), Time.deltaTime * _rotationSpeed);
@@ -84,6 +87,27 @@ public class Player : MonoBehaviour
         var speed = Mathf.Abs(desiredTurnAmount - 0.5f) < Mathf.Abs(f - 0.5f) ? 25f : 8f;
         var turnAmount = Mathf.Lerp(f, desiredTurnAmount, Time.deltaTime * speed);
         _animator.SetFloat("TurnAmount", turnAmount);
+    }
+
+    void IdleBehavior()
+    {
+        SnapToGround();
+    }
+
+    void SnapToGround()
+    {
+        float radius = 0.3f;
+        float castDistance = 1.5f;
+
+        Vector3 position = transform.position;
+        Vector3 direction = -transform.up;
+
+        if (Physics.SphereCast(position, radius, direction, out RaycastHit hit, castDistance, ~0,
+                QueryTriggerInteraction.Ignore))
+        {
+            float newY = hit.point.y + 1f;
+            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        }
     }
 
     
@@ -99,7 +123,7 @@ public class Player : MonoBehaviour
         Vector3 direction = desiredMove.normalized;
 
         // SphereCast to account for player volume
-        if (Physics.SphereCast(position, radius, direction, out RaycastHit hit, castDistance))
+        if (Physics.SphereCast(position, radius, direction, out RaycastHit hit, castDistance, ~0, QueryTriggerInteraction.Ignore))
         {
             // First collision: slide along the surface
             Vector3 firstNormal = hit.normal;
@@ -118,6 +142,12 @@ public class Player : MonoBehaviour
                     desiredMove = Vector3.zero;
             }
         }
+        
+        if (!Physics.SphereCast(position + desiredMove.normalized * 1.25f, radius, -transform.up, out RaycastHit groundHit, 1.5f, ~0,
+                QueryTriggerInteraction.Ignore))
+        {
+            desiredMove = Vector3.zero;
+        }
 
         return desiredMove;
     }
@@ -132,6 +162,8 @@ public class Player : MonoBehaviour
 
         Vector3 moveInput = new Vector3(moveValue2.x, 0, moveValue2.y);
         Vector3 desiredMove = camForwardRotation * moveInput * (Time.deltaTime * _moveSpeed);
+
+        desiredMove = Quaternion.Euler(0, Mathf.Sin(Time.time * 4f) * 12f, 0) * desiredMove;
         return desiredMove;
     }
 

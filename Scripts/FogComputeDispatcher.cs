@@ -29,6 +29,7 @@ public class FogComputeDispatcher
         var volumeToWorld = volume.transform.localToWorldMatrix;
         _computeShader.SetMatrix("_VolumeToWorld", volumeToWorld);
         _computeShader.SetMatrix("_WorldToVolume", volumeToWorld.inverse);
+        _computeShader.SetFloat("HeightToIgnoreOcclusion", volume.ObserverHeightToIgnoreOcclusion);
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);
