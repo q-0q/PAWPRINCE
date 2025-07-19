@@ -7,10 +7,16 @@ public class HideInFog : MonoBehaviour
 {
     private List<MeshRenderer> _meshRenderers;
     public FogVolume _fogVolume;
+    private ParticleSystem _particles;
+    private bool _visible;
     
     void Start()
     {
         _meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
+        var particlesPrefab = Resources.Load("Prefabs/HideInFogParticles") as GameObject;
+        var particlesGameObject = Object.Instantiate(particlesPrefab, transform);
+        _particles = particlesGameObject.GetComponent<ParticleSystem>();
+        _visible = true;
     }
 
     void Update()
@@ -57,6 +63,8 @@ public class HideInFog : MonoBehaviour
 
     void SetVisible(bool visible)
     {
+        if (visible != _visible) _particles.Play();
+        _visible = visible;
         foreach (var meshRenderer in _meshRenderers)
         {
             meshRenderer.enabled = visible;

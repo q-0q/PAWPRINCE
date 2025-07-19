@@ -7,6 +7,7 @@ float HeightToIgnoreOcclusion;
 SamplerState sampler_OcclusionTexture;
 float4x4 _VolumeToWorld;
 float4x4 _WorldToVolume;
+float DeltaTime;
 
 StructuredBuffer<float4> Observers;
 int ObserverCount;
@@ -71,7 +72,8 @@ void CSMain(uint3 id : SV_DispatchThreadID)
             break;
         }
     }
-    
 
-    VolumeTexture[id.xyz] = output;
+    float prev = VolumeTexture[id.xyz];
+    float cur = lerp(prev, output, DeltaTime * 20.0f);
+    VolumeTexture[id.xyz] = cur;
 }

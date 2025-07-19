@@ -30,6 +30,7 @@ public class FogComputeDispatcher
         _computeShader.SetMatrix("_VolumeToWorld", volumeToWorld);
         _computeShader.SetMatrix("_WorldToVolume", volumeToWorld.inverse);
         _computeShader.SetFloat("HeightToIgnoreOcclusion", volume.ObserverHeightToIgnoreOcclusion);
+        _computeShader.SetFloat("DeltaTime", Time.deltaTime);
         
         var props = new MaterialPropertyBlock();
         props.SetTexture("_VolumeTexture", volume.VolumeTexture);
